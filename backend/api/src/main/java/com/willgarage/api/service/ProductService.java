@@ -15,7 +15,16 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAllProducts() {
+    public List<Product> listarProductos() {
         return productRepository.findAll();
     }
+
+    public Product crearProducto(Product product) {
+
+    if (productRepository.existsBySku(product.getSku())) {
+        throw new IllegalArgumentException("Ya existe un producto con el SKU: " + product.getSku());
+    }
+    return productRepository.save(product);
+    }
+
 }
