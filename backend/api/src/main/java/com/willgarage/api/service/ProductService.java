@@ -21,20 +21,16 @@ public class ProductService {
     }
 
     public Product listarPorId(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Producto no encontrado con id: " + id
-                        )
-                );
+        return productRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Producto no encontrado con id: " + id));
     }
 
     public Product crearProducto(Product product) {
 
         if (productRepository.existsBySku(product.getSku())) {
             throw new IllegalArgumentException(
-                    "Ya existe un producto con el SKU: " + product.getSku()
-            );
+                    "Ya existe un producto con el SKU: " + product.getSku());
         }
 
         return productRepository.save(product);
@@ -48,8 +44,7 @@ public class ProductService {
                 && productRepository.existsBySku(datos.getSku())) {
 
             throw new IllegalArgumentException(
-                    "Ya existe un producto con el SKU: " + datos.getSku()
-            );
+                    "Ya existe un producto con el SKU: " + datos.getSku());
         }
 
         producto.setName(datos.getName());
@@ -61,5 +56,12 @@ public class ProductService {
         return productRepository.save(producto);
     }
 
+    public void eliminarProducto(Long id) {
+        Product producto = listarPorId(id);
+
+        producto.setActive(false);
+
+        productRepository.save(producto);
+    }
 
 }
